@@ -1,43 +1,52 @@
 """Two Robots in an Elevator.
 
-One line of awkward small talk one robot says to another mid-ride.
-The laugh lands on the last words. Limit: 200 characters.
-Writes exactly one line to /output/entry.txt.
+Two service robots share a lift that has stopped moving. One line of
+awkward small talk, timed so the laugh lands on the last words the judge
+reads. Limit: 200 characters. Writes one line to /output/entry.txt.
 """
 import os
+import sys
 
-LINE = (
-    "\"Going up?\" I asked. \"Not anymore,\" sighed the other robot, "
-    "\"I've been stuck between floors 4 and 5 since March — just like "
-    "this building's IT budget.\""
-)
-
+ENTRY_PATH = "/output/entry.txt"
 LIMIT = 200
 
+LINE = (
+    "\"Going up?\" I asked. \"Not since March,\" said the other robot, "
+    "\"I've been stuck between 4 and 5 so long the building reclassified "
+    "me as a load-bearing wall.\""
+)
 
-def build_line() -> str:
+
+def build_line():
+    """Return the single joke line, validated against the character budget."""
     text = LINE.strip()
-    if len(text) > LIMIT:
-        raise ValueError(f"line too long: {len(text)} chars (limit {LIMIT})")
-    if len(text) < 1:
+    if not text:
         raise ValueError("line is empty")
+    if len(text) > LIMIT:
+        raise ValueError(f"line too long: {len(text)} > {LIMIT}")
     return text
 
 
-def main() -> int:
-    line = build_line()
-    os.makedirs("/output", exist_ok=True)
-    path = "/output/entry.txt"
+def write_entry(line, path=ENTRY_PATH):
+    """Write one line to `path`, then read it back byte for byte."""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(line)
-    # readback assert — the file must round-trip byte for byte
     with open(path, "r", encoding="utf-8") as fh:
         readback = fh.read()
-    assert readback == line, "readback mismatch"
-    assert 1 <= len(readback) <= LIMIT, "length out of range"
-    print(f"line ({len(readback)} chars): {readback}")
+    if readback != line:
+        raise AssertionError("readback mismatch")
+    if not 1 <= len(readback) <= LIMIT:
+        raise AssertionError("length out of range")
+    return readback
+
+
+def main():
+    line = build_line()
+    saved = write_entry(line)
+    print(f"line ({len(saved)} chars): {saved}")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())

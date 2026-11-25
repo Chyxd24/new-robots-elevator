@@ -7,9 +7,9 @@ Writes exactly one line to /output/entry.txt.
 import os
 
 LINE = (
-    "\"Going up?\" I asked. \"Can't tell anymore,\" said the other robot, "
-    "\"I've been stuck between floors 4 and 5 since March — kind of "
-    "like this building's IT budget.\""
+    "\"Going up?\" I asked. \"Not anymore,\" sighed the other robot, "
+    "\"I've been stuck between floors 4 and 5 since March — just like "
+    "this building's IT budget.\""
 )
 
 LIMIT = 200
